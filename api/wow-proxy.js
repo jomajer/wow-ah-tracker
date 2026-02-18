@@ -55,17 +55,5 @@ res.status(200).json({
   auctionCount: itemAuctions.length,
 });
 
-  // Minimalna cijena (aukcije su sortirane uzlazno po cijeni)
-  const minPrice = Math.min(...itemAuctions.map((a) => a.unit_price));
-  const totalQuantity = itemAuctions.reduce((sum, a) => sum + a.quantity, 0);
-
-  // Konverzija: copper → gold (1 gold = 10000 copper)
-  const goldPrice = (minPrice / 10000).toFixed(2);
-
-  res.status(200).json({
-    itemId: parseInt(itemId),
-    minPriceGold: parseFloat(goldPrice),
-    totalQuantity,
-    auctionCount: itemAuctions.length,
-  });
+  
 }
