@@ -30,12 +30,30 @@ export default async function handler(req, res) {
 
   // 3. Filtriraj samo traženi item i nađi minimalnu cijenu
   const itemAuctions = data.auctions.filter(
-    (a) => a.item.id === parseInt(itemId)
-  );
+  (a) => a.item.id === parseInt(itemId)
+);
 
-  if (itemAuctions.length === 0) {
-    return res.status(404).json({ error: "Item not found on AH" });
-  }
+if (itemAuctions.length === 0) {
+  return res.status(404).json({ error: "Item not found on AH" });
+}
+
+// Sortiraj uzlazno po cijeni i uzmi top 5
+const top5 = itemAuctions
+  .sort((a, b) => a.unit_price - b.unit_price)
+  .slice(0, 5)
+  .map((a) => ({
+    priceGold: parseFloat((a.unit_price / 10000).toFixed(2)),
+    quantity: a.quantity,
+  }));
+
+const totalQuantity = itemAuctions.reduce((sum, a) => sum + a.quantity, 0);
+
+res.status(200).json({
+  itemId: parseInt(itemId),
+  top5Prices: top5,
+  totalQuantity,
+  auctionCount: itemAuctions.length,
+});
 
   // Minimalna cijena (aukcije su sortirane uzlazno po cijeni)
   const minPrice = Math.min(...itemAuctions.map((a) => a.unit_price));
