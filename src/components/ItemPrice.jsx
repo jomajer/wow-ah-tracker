@@ -1,5 +1,10 @@
 // src/components/ItemPrice.jsx
 import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+
+export default function ItemPrice() {
+  const { itemId } = useParams();          // novo
+  const effectiveItemId = itemId || "210810"; // default Arathor's Spear
 
 const ITEMS = {
   "Arathor's Spear (Rank 3)": 210810,
@@ -14,7 +19,7 @@ export default function ItemPrice() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`/api/wow-proxy?itemId=210810`);
+      const res = await fetch(`/api/wow-proxy?itemId=${effectiveItemId}`);
       if (!res.ok) throw new Error("API error");
       const data = await res.json();
       setPrice(data);
@@ -32,7 +37,7 @@ export default function ItemPrice() {
   return (
     <div style={{ fontFamily: "sans-serif", padding: "2rem" }}>
       <h1>🪙 WoW AH Price Tracker</h1>
-      <h2>Arathor's Spear (Rank 3)</h2>
+      <h2>Item ID: {effectiveItemId}</h2>
 
       {loading && <p>⏳ Učitavam podatke s Blizzard API-a...</p>}
       {error && <p style={{ color: "red" }}>❌ {error}</p>}

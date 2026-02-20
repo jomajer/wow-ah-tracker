@@ -1,6 +1,7 @@
 // src/pages/MidnightTailoring.jsx
 import { useEffect, useState } from "react";
 import * as XLSX from "xlsx";
+import { Link } from "react-router-dom";
 
 export default function MidnightTailoring() {
   const [materials, setMaterials] = useState([]);
@@ -70,7 +71,11 @@ export default function MidnightTailoring() {
         <tbody>
           {materials.map((m) => (
             <tr key={m.id}>
-              <td>{m.name}</td>
+				<td>
+					<Link to={`/item/${m.id}`}>
+						{m.name}
+					</Link>
+				</td>
               <td>{m.source === "vendor" ? "Vendor" : "AH"}</td>
               <td style={{ textAlign: "right" }}>
                 {m.minPriceGold != null ? `${m.minPriceGold}g` : "-"}
