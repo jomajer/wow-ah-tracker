@@ -1,6 +1,6 @@
 // src/data/midnightTailoringMaterials.js
 export const MIDNIGHT_TAILORING_MATERIALS = [
-  { name: "Bright Linen", id: 236963, isVendor: false },
+ /* { name: "Bright Linen", id: 236963, isVendor: false },
   { name: "Sunfire Silk", id: 237015, isVendor: false },
   { name: "Arcanoweave", id: 237017, isVendor: false },
   { name: "Bright Linen Bolt", id: 239700, isVendor: false },
@@ -21,5 +21,6 @@ export const MIDNIGHT_TAILORING_MATERIALS = [
   { name: "Carving Canine", id: 238523, isVendor: false },
   { name: "Fantastic Fur", id: 238525, isVendor: false },
   { name: "Tormented Tantalum", id: 251283, isVendor: false },
-  { name: "Petrified Root", id: 251285, isVendor: false },
+  { name: "Petrified Root", id: 251285, isVendor: false },*/
+  { name: "Arathor's Spear", id: 210810, isVendor: false },
 ];
