@@ -1,5 +1,5 @@
 // src/components/ItemPrice.jsx
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 
 export default function ItemPrice() {
