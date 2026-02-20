@@ -38,7 +38,7 @@ export default async function handler(req, res) {
         return {
           ...mat,
           source: "vendor",
-          minPriceGold: null,
+          minPriceGold: mat.vendorPriceGold ?? null,
           totalQuantity: null,
           auctionCount: null,
         };
