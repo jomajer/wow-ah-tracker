@@ -6,11 +6,7 @@ export default function ItemPrice() {
   const { itemId } = useParams();          // novo
   const effectiveItemId = itemId || "210810"; // default Arathor's Spear
 
-const ITEMS = {
-  "Arathor's Spear (Rank 3)": 210810,
-};
 
-export default function ItemPrice() {
   const [price, setPrice] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
