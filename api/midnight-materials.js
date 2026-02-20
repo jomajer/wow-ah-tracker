@@ -44,31 +44,47 @@ export default async function handler(req, res) {
         };
       }
 
-      const itemAuctions = auctions.filter((a) => a.item.id === mat.id);
-      if (!itemAuctions.length) {
-        return {
-          ...mat,
-          source: "ah",
-          minPriceGold: null,
-          totalQuantity: 0,
-          auctionCount: 0,
-        };
-      }
+		const itemAuctions = auctions
+		  .filter((a) => a.item.id === mat.id)
+		  .sort((a, b) => a.unit_price - b.unit_price);
 
-      const minPriceCopper = Math.min(...itemAuctions.map((a) => a.unit_price));
-      const totalQuantity = itemAuctions.reduce(
-        (sum, a) => sum + a.quantity,
-        0
-      );
+		if (!itemAuctions.length) {
+		  return {
+			...mat,
+			source: "ah",
+			minPriceGold: null,
+			totalQuantity: 0,
+			auctionCount: 0,
+		  };
+		}
 
-      return {
-        ...mat,
-        source: "ah",
-        minPriceGold: +(minPriceCopper / 10000).toFixed(2),
-        totalQuantity,
-        auctionCount: itemAuctions.length,
-      };
-    });
+		// anti-bait logika: skipaj najjeftinije dok ukupna količina < 5
+		let cumulativeQty = 0;
+		let index = 0;
+
+		while (index < itemAuctions.length && cumulativeQty + itemAuctions[index].quantity < 5) {
+		  cumulativeQty += itemAuctions[index].quantity;
+		  index++;
+		}
+
+		// ako smo preskočili sve (npr. sve su količine 1), fallback na zadnju
+		const effectiveAuctions =
+		  index < itemAuctions.length ? itemAuctions.slice(index) : itemAuctions;
+
+		const minPriceCopper = effectiveAuctions[0].unit_price;
+		const totalQuantity = effectiveAuctions.reduce(
+		  (sum, a) => sum + a.quantity,
+		  0
+		);
+
+		return {
+		  ...mat,
+		  source: "ah",
+		  minPriceGold: +(minPriceCopper / 10000).toFixed(2),
+		  totalQuantity,
+		  auctionCount: effectiveAuctions.length,
+		};
+			});
 
     res.status(200).json({ materials: result });
   } catch (err) {
