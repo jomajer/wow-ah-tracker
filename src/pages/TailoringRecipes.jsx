@@ -1,34 +1,29 @@
 // src/pages/TailoringRecipes.jsx
 import { useState } from "react";
-import { TAILORING_RECIPES, enrichRecipeWithMaterialNames } from "../data/tailoringRecipes";
+import { TAILORING_RECIPES } from "../data/tailoringRecipes";
 
 export default function TailoringRecipes() {
-  const [selectedRecipeId, setSelectedRecipeId] = useState(
-    TAILORING_RECIPES[0]?.id || ""
-  );
+  const [skill, setSkill] = useState(0);
+  const [multicraft, setMulticraft] = useState(0); // %
+  const [resourcefulness, setResourcefulness] = useState(0); // %
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const selectedRecipe = enrichRecipeWithMaterialNames(
-    TAILORING_RECIPES.find((r) => r.id === selectedRecipeId)
-  );
-
-  const calculateCost = async () => {
-    if (!selectedRecipeId) return;
+  const calculateAll = async () => {
     setLoading(true);
     setError(null);
     setResult(null);
 
     try {
-      const res = await fetch("/api/craft-cost", {
+      const res = await fetch("/api/craft-cost-all", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          recipeId: selectedRecipeId,
           stats: {
-            multicraftChance: 0,
-            resourcefulnessChance: 0,
+            skill: Number(skill) || 0,
+            multicraftChance: (Number(multicraft) || 0) / 100,
+            resourcefulnessChance: (Number(resourcefulness) || 0) / 100,
           },
         }),
       });
@@ -40,95 +35,130 @@ export default function TailoringRecipes() {
       const data = await res.json();
       setResult(data);
     } catch (e) {
-      setError("Greška pri izračunu cijene.");
+      setError("Greška pri izračunu recepata.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div style={{ fontFamily: "sans-serif", padding: "2rem", maxWidth: "900px" }}>
-      <h1>Tailoring recepti – cost kalkulator</h1>
+    <div style={{ fontFamily: "sans-serif", padding: "2rem", maxWidth: "1200px" }}>
+      <h1>Tailoring recepti – cost za sve recepte</h1>
 
-      {/* Odabir recepta */}
-      <div style={{ marginBottom: "1rem" }}>
-        <label>
-          Recept:&nbsp;
-          <select
-            value={selectedRecipeId}
-            onChange={(e) => setSelectedRecipeId(e.target.value)}
+      {/* Input zona za statse */}
+      <div
+        style={{
+          marginBottom: "1rem",
+          padding: "1rem",
+          border: "1px solid #ccc",
+          borderRadius: "8px",
+        }}
+      >
+        <h2>Statovi lika</h2>
+        <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
+          <label>
+            Skill:&nbsp;
+            <input
+              type="number"
+              value={skill}
+              onChange={(e) => setSkill(e.target.value)}
+              style={{ width: "80px" }}
+            />
+          </label>
+          <label>
+            Multicraft (%):&nbsp;
+            <input
+              type="number"
+              value={multicraft}
+              onChange={(e) => setMulticraft(e.target.value)}
+              style={{ width: "80px" }}
+            />
+          </label>
+          <label>
+            Resourcefulness (%):&nbsp;
+            <input
+              type="number"
+              value={resourcefulness}
+              onChange={(e) => setResourcefulness(e.target.value)}
+              style={{ width: "80px" }}
+            />
+          </label>
+          <button
+            onClick={calculateAll}
+            style={{ padding: "0.5rem 1rem", marginLeft: "auto" }}
           >
-            {TAILORING_RECIPES.map((r) => (
-              <option key={r.id} value={r.id}>
-                {r.name}
-              </option>
-            ))}
-          </select>
-        </label>
-        <button
-          onClick={calculateCost}
-          style={{ marginLeft: "1rem", padding: "0.5rem 1rem" }}
-        >
-          Izračunaj cost
-        </button>
+            Izračunaj sve recepte
+          </button>
+        </div>
+        <p style={{ fontSize: "0.85rem", color: "#666", marginTop: "0.5rem" }}>
+          Skill je zasad informativan (utječe na kvalitetu, ne na cost), multicraft i
+          resourcefulness utječu na očekivani cost po itemu.
+        </p>
       </div>
 
       {error && <p style={{ color: "red" }}>{error}</p>}
       {loading && <p>Računam...</p>}
 
-      {/* Rezultat */}
+      {/* Tablica svih recepata */}
       {result && (
-        <div style={{ marginTop: "1.5rem" }}>
-          <h2>{result.recipeName}</h2>
-
+        <div style={{ marginTop: "1rem" }}>
           <table
             style={{
               width: "100%",
               borderCollapse: "collapse",
               marginBottom: "1rem",
+              fontSize: "0.9rem",
             }}
           >
             <thead>
               <tr>
                 <th style={{ textAlign: "left", borderBottom: "1px solid #ccc" }}>
-                  Materijal
+                  Recept
                 </th>
                 <th style={{ textAlign: "right", borderBottom: "1px solid #ccc" }}>
-                  Količina
+                  Base cost (g)
                 </th>
                 <th style={{ textAlign: "right", borderBottom: "1px solid #ccc" }}>
-                  Cijena / kom (g)
+                  Cost nakon Resourcefulness (g)
                 </th>
                 <th style={{ textAlign: "right", borderBottom: "1px solid #ccc" }}>
-                  Ukupno (g)
+                  Očekivani output
+                </th>
+                <th style={{ textAlign: "right", borderBottom: "1px solid #ccc" }}>
+                  Effective cost / item (g)
+                </th>
+                <th style={{ textAlign: "left", borderBottom: "1px solid #ccc" }}>
+                  Formula
                 </th>
               </tr>
             </thead>
             <tbody>
-              {result.materials.map((m) => (
-                <tr key={m.materialId}>
-                  <td>{m.name}</td>
-                  <td style={{ textAlign: "right" }}>{m.quantity}</td>
+              {result.recipes.map((r) => (
+                <tr key={r.id}>
+                  <td style={{ padding: "0.25rem 0" }}>{r.name}</td>
                   <td style={{ textAlign: "right" }}>
-                    {m.unitPriceGold.toFixed(2)}
+                    {r.cost.baseCostGold.toFixed(2)}
                   </td>
                   <td style={{ textAlign: "right" }}>
-                    {m.totalGold.toFixed(2)}
+                    {r.cost.costAfterResourcefulnessGold.toFixed(2)}
                   </td>
+                  <td style={{ textAlign: "right" }}>
+                    {r.cost.totalExpectedOutput.toFixed(2)}
+                  </td>
+                  <td style={{ textAlign: "right" }}>
+                    {r.cost.effectiveCostPerItemGold.toFixed(2)}
+                  </td>
+                  <td style={{ paddingLeft: "0.5rem" }}>{r.cost.formulaText}</td>
                 </tr>
               ))}
             </tbody>
           </table>
-
-          <p>
-            <strong>Ukupan cost po craftu:</strong>{" "}
-            {result.totalCostGold.toFixed(2)} g
-          </p>
-          <p>
-            <strong>Effective cost (sa statsima):</strong>{" "}
-            {result.effectiveCostGold.toFixed(2)} g
-          </p>
         </div>
+      )}
+
+      {/* Ako još nisi dodao recepte, barem prikaži da ih nema */}
+      {!loading && !result && TAILORING_RECIPES.length === 0 && (
+        <p>Još nema definiranih tailoring recepata.</p>
       )}
     </div>
   );
