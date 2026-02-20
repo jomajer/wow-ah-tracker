@@ -1,5 +1,5 @@
 // api/midnight-materials.js
-import { MIDNIGHT_TAILORING_MATERIALS } from "../src/data/midnightTailoringMaterials";
+import { MIDNIGHT_TAILORING_MATERIALS } from "../src/data/midnightTailoringMaterials.js";
 
 export default async function handler(req, res) {
   try {

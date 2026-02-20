@@ -1,0 +1,26 @@
+// src/data/midnightTailoringMaterials.js
+export const MIDNIGHT_TAILORING_MATERIALS = [
+ /* { name: "Bright Linen", id: 236963, isVendor: false },
+  { name: "Sunfire Silk", id: 237015, isVendor: false },
+  { name: "Arcanoweave", id: 237017, isVendor: false },
+  { name: "Bright Linen Bolt", id: 239700, isVendor: false },
+  { name: "Imbued Bright Linen Bolt", id: 239702, isVendor: false },
+  { name: "Sunfire Silk Bolt", id: 239201, isVendor: false },
+  { name: "Arcanoweave Bolt", id: 239198, isVendor: false },
+  { name: "Sunfire Silk Lining", id: 240164, isVendor: false },
+  { name: "Arcanoweave Lining", id: 240166, isVendor: false },
+  { name: "Silverleaf Thread", id: 251665, isVendor: true },
+  { name: "Embroidery Floss", id: 251691, isVendor: true },
+  { name: "Eversinging Dust", id: 243599, isVendor: false },
+  { name: "Radiant Shard", id: 243602, isVendor: false },
+  { name: "Mote of Light", id: 236949, isVendor: false },
+  { name: "Mote of Primal Energy", id: 236950, isVendor: false },
+  { name: "Mote of Wild Magic", id: 236951, isVendor: false },
+  { name: "Mote of Pure Void", id: 236952, isVendor: false },
+  { name: "Peerless Plumage", id: 238522, isVendor: false },
+  { name: "Carving Canine", id: 238523, isVendor: false },
+  { name: "Fantastic Fur", id: 238525, isVendor: false },
+  { name: "Tormented Tantalum", id: 251283, isVendor: false },
+  { name: "Petrified Root", id: 251285, isVendor: false },*/
+  { name: "Arathor's Spear", id: 210810, isVendor: false },
+];
